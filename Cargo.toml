@@ -1,0 +1,37 @@
+[package]
+name = "vfdtune"
+version = "0.1.0"
+edition = "2021"
+description = "Retro VFD-style Spotify player for the terminal (Spotify Premium required)"
+
+[features]
+# Audio backend. PipeWire users: keep the default (talks to pipewire-pulse).
+# Build with `--no-default-features --features alsa` (or `rodio`) to switch.
+default = ["pulse"]
+pulse = ["librespot-playback/pulseaudio-backend"]
+alsa = ["librespot-playback/alsa-backend"]
+rodio = ["librespot-playback/rodio-backend"]
+
+[dependencies]
+librespot-core = "0.8"
+librespot-metadata = "0.8"
+librespot-playback = { version = "0.8", default-features = false }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "sync", "time", "net", "io-util"] }
+ratatui = "0.29"
+reqwest = { version = "0.12", features = ["json"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+base64 = "0.22"
+log = "0.4"
+
+# Workaround: librespot-core's build script breaks with vergen 9.1.0 (mismatched vergen-lib).
+# Pinning 9.0.6 here (see build.rs) forces a compatible dependency graph.
+[build-dependencies]
+vergen = "=9.0.6"
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 1
+strip = true

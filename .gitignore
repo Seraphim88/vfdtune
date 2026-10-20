@@ -1,0 +1,4 @@
+/target/
+*.log
+token_*.json
+config.json
